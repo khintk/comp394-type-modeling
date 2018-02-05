@@ -8,13 +8,13 @@ import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 class PythonObjectTest {
 
     private PythonType fooType;
     private PythonType barType;
     private PythonObject foo;
     private PythonObject bar;
-
     /**
      * Equivalent Python:
      *
