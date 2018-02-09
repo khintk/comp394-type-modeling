@@ -19,6 +19,7 @@ public class PythonType extends PythonObject {
      *             (In real Python, instead of null it would be the class called `object`, and
      *             it would be a list instead of a single value.)
      */
+
     public PythonType(String name, PythonObject base) {
         super(null);  // In real Python, this would be the type called `type`
         this.name = name;
@@ -29,6 +30,7 @@ public class PythonType extends PythonObject {
      * The name of this class.
      */
     public String getName() {
+
         return name;
     }
 
@@ -36,12 +38,18 @@ public class PythonType extends PythonObject {
      * The base type (superclass) of this class.
      */
     public PythonObject getBase() {
+
         return base;
     }
 
     @Override
     protected List<PythonObject> buildMRO() {
-        throw new UnsupportedOperationException("not implemented yet");
+        List<PythonObject> resultMRO = new ArrayList<>();
+        resultMRO.add(this);
+        if (this.getBase() != null){
+            resultMRO.addAll(this.getBase().getMRO());
+        }
+        return resultMRO;
     }
 
     /**
@@ -49,7 +57,8 @@ public class PythonType extends PythonObject {
      * this PythonType.
      */
     public PythonObject instantiate() {
-        throw new UnsupportedOperationException("not implemented yet");
+        PythonObject instance = new PythonObject(this);
+        return instance;
     }
 
     @Override

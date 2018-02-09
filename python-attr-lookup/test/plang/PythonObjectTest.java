@@ -100,7 +100,7 @@ class PythonObjectTest {
         assertEquals(null, foo.get("worries"));  // No exception!
     }
 
-    @Test
+    @Test //didnt pass
     void findInheritedAttrs() throws Exception {
         // Equivalent Python:
         //
@@ -116,7 +116,7 @@ class PythonObjectTest {
         assertEqualsPyStr("rainbow", bar.get("socks"));
     }
 
-    @Test
+    @Test //didnt pass
     void overrideInheritedAttrsInType() throws Exception {
         // Equivalent Python:
         //
@@ -132,7 +132,7 @@ class PythonObjectTest {
         assertEqualsPyStr("polka dot", bar.get("socks"));
     }
 
-    @Test
+    @Test //didnt pass
     void overrideInheritedAttrsInInstance() throws Exception {
         // Equivalent Python:
         //
@@ -149,7 +149,7 @@ class PythonObjectTest {
     }
 
 
-    @Test
+    @Test //didnt pass
     void overrideInheritedAttrsWithNull() throws Exception {
         // Equivalent Python:
         //
