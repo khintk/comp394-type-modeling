@@ -13,7 +13,7 @@ class TestNull(TypeTest):
         Equivalent Java:
 
             Rectangle rect;
-
+https://github.com/khintk/comp394-type-modeling
             rect.setFillColor(null);
         """
         self.assertNoCompileErrors(
