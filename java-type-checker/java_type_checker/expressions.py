@@ -31,6 +31,12 @@ class Variable(Expression):
         self.name = name                    #: The name of the variable
         self.declared_type = declared_type  #: The declared type of the variable (Type)
 
+    def static_type(self):
+        return self.declared_type
+
+    def check_types(self):
+        return self.declared_type.is_subtype_of(self.static_type())
+
 
 class Literal(Expression):
     """ A literal value entered in the code, e.g. `5` in the expression `x + 5`.
@@ -38,6 +44,13 @@ class Literal(Expression):
     def __init__(self, value, type):
         self.value = value  #: The literal value, as a string
         self.type = type    #: The type of the literal (Type)
+
+    def static_type(self):
+        return self.type
+
+    def check_types(self):
+        return self.type.is_subtype_of(self.static_type())
+
 
 
 class NullLiteral(Literal):
@@ -55,6 +68,8 @@ class MethodCall(Expression):
         self.method_name = method_name  #: The name of the method to call (String)
         self.args = args                #: The method arguments (list of Expressions)
 
+    def static_type(self):
+        return self.receiver.static_type().methods[self.method_name].return_type
 
 class ConstructorCall(Expression):
     """
@@ -64,6 +79,8 @@ class ConstructorCall(Expression):
         self.instantiated_type = instantiated_type  #: The type to instantiate (Type)
         self.args = args                            #: Constructor arguments (list of Expressions)
 
+    def static_type(self):
+        return self.instantiated_type
 
 class JavaTypeError(Exception):
     """ Indicates a compile-time type error in an expression.
