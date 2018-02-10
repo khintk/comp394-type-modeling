@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .types import Type
+from .types import Type, NoSuchMethod
 
 
 class Expression(object):
@@ -35,7 +35,7 @@ class Variable(Expression):
         return self.declared_type
 
     def check_types(self):
-        return self.declared_type.is_subtype_of(self.static_type())
+        pass
 
 
 class Literal(Expression):
@@ -49,7 +49,7 @@ class Literal(Expression):
         return self.type
 
     def check_types(self):
-        return self.type.is_subtype_of(self.static_type())
+        pass
 
 
 
@@ -57,19 +57,58 @@ class NullLiteral(Literal):
     def __init__(self):
         super().__init__("null", Type.null)
 
+    def static_type(self):
+        return Type.null
+
+    def check_types(self):
+        pass
+
 
 class MethodCall(Expression):
     """
     A Java method invocation, i.e. `foo.bar(0, 1, 2)`.
     """
     def __init__(self, receiver, method_name, *args):
-        self.receiver = receiver
         self.receiver = receiver        #: The object whose method we are calling (Expression)
         self.method_name = method_name  #: The name of the method to call (String)
         self.args = args                #: The method arguments (list of Expressions)
 
     def static_type(self):
-        return self.receiver.static_type().methods[self.method_name].return_type
+        return self.receiver.static_type().method_named(self.method_name).return_type
+
+    def check_types(self):
+        print("afasd")
+        # print(self.receiver.static_type().method_named(self.method_name).argument_types)
+        # print(self.args)
+        listOfArguments = self.receiver.static_type().method_named(self.method_name).argument_types
+        numOfMethodsParameters = len(self.receiver.static_type().method_named(self.method_name).argument_types)
+        # print(listOfArguments[1] != (self.args[1].static_type()))
+        listOfTypesOfParameterArguments = []
+        listOfTypesOfArguments = []
+
+        for i in range(len(self.args)):
+            listOfTypesOfParameterArguments.append(listOfArguments[i].name)
+            listOfTypesOfArguments.append(self.args[i].static_type().name)
+
+        if(self.method_name not in self.receiver.static_type().methods):
+            if (len(self.args) != numOfMethodsParameters):
+                raise JavaTypeError(
+                    "Wrong number of arguments for {0}: expected {1}, got {2}".format(
+                        str(self.receiver.static_type().name) + "." + str(self.method_name) + "()",
+                        numOfMethodsParameters,
+                        len(self.args)))
+            return self.receiver.static_type().method_named(self.method_name)
+
+        else:
+            for i in range(len(self.args)):
+                # if ((listOfArguments[i].name != (self.args[i].static_type().name))):
+                if("a" != "b"):
+                    raise JavaTypeError(
+                        "{0} expects arguments of type {1}, but got {2}".format(
+                            str(self.receiver.static_type().name) + "." + str(self.method_name) + "()",
+                            tuple(listOfTypesOfParameterArguments),
+                            tuple(listOfTypesOfArguments)))
+
 
 class ConstructorCall(Expression):
     """
@@ -81,6 +120,9 @@ class ConstructorCall(Expression):
 
     def static_type(self):
         return self.instantiated_type
+
+    def check_types(self):
+        pass
 
 class JavaTypeError(Exception):
     """ Indicates a compile-time type error in an expression.

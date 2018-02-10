@@ -44,7 +44,7 @@ class TestTypeChecking(TypeTest):
                 Variable("p", Graphics.point),
                 "getZ"))
 
-    def test_flags_too_many_arguments(self):
+    def test_flags_too_many_arguments(self): #fail
         """
         Equivalent Java:
 
