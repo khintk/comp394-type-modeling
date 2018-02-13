@@ -8,15 +8,15 @@ import unittest
 
 class TestTypeChecking(TypeTest):
 
-    def test_variables_never_have_type_errors(self):
+    def test_variables_never_have_type_errors(self): #Pass
         self.assertNoCompileErrors(
             Variable("p", Graphics.point))
 
-    def test_literals_never_have_type_errors(self):
+    def test_literals_never_have_type_errors(self): #Pass
         self.assertNoCompileErrors(
             Variable("3.72", Type.double))
 
-    def test_simple_method_call_passes(self):
+    def test_simple_method_call_passes(self): #pass
         """
         Equivalent Java:
 
@@ -29,7 +29,7 @@ class TestTypeChecking(TypeTest):
                 Variable("p", Graphics.point),
                 "getX"))
 
-    def test_flags_nonexistent_method(self):
+    def test_flags_nonexistent_method(self): #Pass
         """
         Equivalent Java:
 
@@ -44,7 +44,7 @@ class TestTypeChecking(TypeTest):
                 Variable("p", Graphics.point),
                 "getZ"))
 
-    def test_flags_too_many_arguments(self): #fail
+    def test_flags_too_many_arguments(self): #Pass
         """
         Equivalent Java:
 
@@ -61,7 +61,7 @@ class TestTypeChecking(TypeTest):
                 Literal("0.0", Type.double),
                 Literal("1.0", Type.double)))
 
-    def test_flags_too_few_arguments(self):
+    def test_flags_too_few_arguments(self): #Pass
         """
         Equivalent Java:
 
@@ -77,7 +77,7 @@ class TestTypeChecking(TypeTest):
                 "setPosition",
                 Literal("0.0", Type.double)))
 
-    def test_flags_wrong_argument_type(self):
+    def test_flags_wrong_argument_type(self): #Fail
         """
         Equivalent Java:
 
@@ -94,7 +94,7 @@ class TestTypeChecking(TypeTest):
                 Literal("0.0", Type.double),
                 Literal("true", Type.boolean)))
 
-    def test_allows_subtypes_for_arguments(self):
+    def test_allows_subtypes_for_arguments(self): #Pass
         """
         Equivalent Java:
 
@@ -109,7 +109,7 @@ class TestTypeChecking(TypeTest):
                 "setFillColor",
                 Variable("red", Graphics.color)))
 
-    def test_flags_wrong_number_of_constructor_arguments(self):
+    def test_flags_wrong_number_of_constructor_arguments(self): #Pass
         """
         Equivalent Java:
 
@@ -124,7 +124,7 @@ class TestTypeChecking(TypeTest):
                 Graphics.rectangle,
                 Variable("p", Graphics.point)))
 
-    def test_flags_wrong_constructor_argument_type(self):
+    def test_flags_wrong_constructor_argument_type(self): #Fail
         """
         Equivalent Java:
 
@@ -140,7 +140,7 @@ class TestTypeChecking(TypeTest):
                 Variable("p", Graphics.point),
                 Literal("true", Type.boolean)))
 
-    def test_cannot_call_methods_on_primitives(self):
+    def test_cannot_call_methods_on_primitives(self): # Pass
         """
         Equivalent Java:
 
@@ -160,14 +160,14 @@ class TestTypeChecking(TypeTest):
 
             new int()
         """
-    def test_cannot_instantiate_primitives(self):
+    def test_cannot_instantiate_primitives(self): #Pass
         self.assertCompileError(
             JavaTypeError,
             "Type int is not instantiable",
             ConstructorCall(
                 Type.int))
 
-    def test_does_not_allow_void_passed_as_argument(self):
+    def test_does_not_allow_void_passed_as_argument(self): #Fail
         """
         Equivalent Java:
 
@@ -188,7 +188,7 @@ class TestTypeChecking(TypeTest):
                     "setStrokeColor",
                     Variable("red", Graphics.color))))
 
-    def test_passes_deep_expression(self):
+    def test_passes_deep_expression(self): #Fail
         """
         Equivalent Java:
 
@@ -213,7 +213,7 @@ class TestTypeChecking(TypeTest):
                         Variable("window", Graphics.window),
                         "getSize"))))
 
-    def test_catch_wrong_name_in_deep_expression(self):
+    def test_catch_wrong_name_in_deep_expression(self): #Fail
         """
         Equivalent Java:
 

@@ -77,7 +77,7 @@ class NullType(Type):
     """
     def __init__(self):
         super().__init__("null")
-
+        self.is_instantiable = False
 
 class NoSuchMethod(Exception):
     pass

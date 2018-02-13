@@ -77,37 +77,43 @@ class MethodCall(Expression):
         return self.receiver.static_type().method_named(self.method_name).return_type
 
     def check_types(self):
-        print("afasd")
-        # print(self.receiver.static_type().method_named(self.method_name).argument_types)
-        # print(self.args)
-        listOfArguments = self.receiver.static_type().method_named(self.method_name).argument_types
-        numOfMethodsParameters = len(self.receiver.static_type().method_named(self.method_name).argument_types)
-        # print(listOfArguments[1] != (self.args[1].static_type()))
-        listOfTypesOfParameterArguments = []
-        listOfTypesOfArguments = []
 
+        #check the whether the receiver is the primitives types
+        # TODO: Don't hard code this list; ask the type whether it is instantiable
+        primitivesTypes = ["int", "boolean", "byte", "char", "short", "int", "long", "float", "double"]
+
+        #primitive types error
+        if (self.receiver.static_type().name in primitivesTypes):
+            raise JavaTypeError(
+                "Type {0} does not have methods".format(
+                    self.receiver.static_type().name))
+
+        method = self.receiver.static_type().method_named(self.method_name)
+        expected_argument_types = method.argument_types
+        numOfMethodParameters = len(method.argument_types)
+
+        #checking the method called is in the method of the receiver.
+
+        #If the length of methods are not the same
+        if (len(self.args) != numOfMethodParameters):
+            raise JavaTypeError(
+                "Wrong number of arguments for {0}: expected {1}, got {2}".format(
+                    str(self.receiver.static_type().name) + "." + str(self.method_name) + "()",
+                    numOfMethodParameters,
+                    len(self.args)))
+
+        actual_argument_types = []
         for i in range(len(self.args)):
-            listOfTypesOfParameterArguments.append(listOfArguments[i].name)
-            listOfTypesOfArguments.append(self.args[i].static_type().name)
+            actual_argument_types.append(self.args[i].static_type())
 
-        if(self.method_name not in self.receiver.static_type().methods):
-            if (len(self.args) != numOfMethodsParameters):
-                raise JavaTypeError(
-                    "Wrong number of arguments for {0}: expected {1}, got {2}".format(
+        #check if the right type of arguments are taken in.
+        for i in range(len(expected_argument_types)):
+            if not actual_argument_types[i].is_subtype_of(expected_argument_types[i]):
+                raise TypeError(
+                    "{0} expects arguments of type {1}, but got {2}".format(
                         str(self.receiver.static_type().name) + "." + str(self.method_name) + "()",
-                        numOfMethodsParameters,
-                        len(self.args)))
-            return self.receiver.static_type().method_named(self.method_name)
-
-        else:
-            for i in range(len(self.args)):
-                # if ((listOfArguments[i].name != (self.args[i].static_type().name))):
-                if("a" != "b"):
-                    raise JavaTypeError(
-                        "{0} expects arguments of type {1}, but got {2}".format(
-                            str(self.receiver.static_type().name) + "." + str(self.method_name) + "()",
-                            tuple(listOfTypesOfParameterArguments),
-                            tuple(listOfTypesOfArguments)))
+                        names(expected_argument_types),
+                        names(actual_argument_types)))
 
 
 class ConstructorCall(Expression):
@@ -122,7 +128,44 @@ class ConstructorCall(Expression):
         return self.instantiated_type
 
     def check_types(self):
-        pass
+
+        #checking if it is the primitives types.
+        primitivesTypes = ["int", "boolean", "byte", "char", "short", "int", "long", "float", "double"]
+        if (self.instantiated_type.name in primitivesTypes):
+            raise JavaTypeError(
+                "Type {0} is not instantiable".format(
+                    self.instantiated_type.name))
+
+        else:
+            listOfConstructorArguments = self.instantiated_type.constructor.argument_types
+            listOfTypesOfParameterArguments = []
+            listOfTypesOfArguments = []
+
+            for i in range(len(self.args)):
+                listOfTypesOfParameterArguments.append(listOfConstructorArguments[i].name)
+                listOfTypesOfArguments.append(self.args[i].static_type().name)
+
+                if (len(self.args) != len(listOfConstructorArguments)):
+                    raise JavaTypeError(
+                        "Wrong number of arguments for {0} constructor: expected {1}, got {2}".format(
+                            self.instantiated_type.name,
+                            len(listOfConstructorArguments),
+                            len(self.args)
+                        )
+                    )
+
+                else:
+                    for i in range(len(listOfTypesOfParameterArguments)):
+                        if(listOfTypesOfParameterArguments[i] != listOfTypesOfArguments[i]):
+                            raise JavaTypeError(
+                                "{0} constructor expects arguments of type {1}, but got {2}".format(
+                                    self.instantiated_type.name,
+                                    tuple(listOfTypesOfParameterArguments),
+                                    tuple(listOfTypesOfArguments)
+                            )
+                        )
+
+
 
 class JavaTypeError(Exception):
     """ Indicates a compile-time type error in an expression.

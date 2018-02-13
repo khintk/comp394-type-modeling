@@ -22,6 +22,7 @@ https://github.com/khintk/comp394-type-modeling
                 "setFillColor",
                 NullLiteral()))
 
+
     def test_cannot_call_method_on_null(self):
         """
         Equivalent Java:
