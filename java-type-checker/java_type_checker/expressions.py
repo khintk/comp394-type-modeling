@@ -77,7 +77,7 @@ class MethodCall(Expression):
         return self.receiver.static_type().method_named(self.method_name).return_type
 
     def check_types(self):
-        #check for the primitive error.
+        #check for the primitive error
         if not self.receiver.static_type().is_instantiable:
             raise JavaTypeError(
                 "Type {0} does not have methods".format(
@@ -96,13 +96,13 @@ class MethodCall(Expression):
                     numOfMethodParameters,
                     len(self.args)))
 
-        actual_argument_typCes = []
+        actual_argument_types = []
         for i in range(len(self.args)):
             actual_argument_types.append(self.args[i].static_type())
 
         for i in range(len(expected_argument_types)):
             if not actual_argument_types[i].is_subtype_of(expected_argument_types[i]):
-                raise TypeError(
+                raise JavaTypeError(
                     "{0} expects arguments of type {1}, but got {2}".format(
                         str(self.receiver.static_type().name) + "." + str(self.method_name) + "()",
                         names(expected_argument_types),
@@ -137,6 +137,7 @@ class ConstructorCall(Expression):
                     len(self.args)
                 )
             )
+
         list_of_actual_argument_types = []
         for i in range(len(self.args)):
             list_of_actual_argument_types.append(self.args[i].static_type())
