@@ -144,9 +144,9 @@ class ConstructorCall(Expression):
 
         for i in range(len(list_of_expected_constructor_arguments)):
             if not list_of_actual_argument_types[i].is_subtype_of(list_of_expected_constructor_arguments[i]):
-                raise TypeError(
-                    "{0} expects arguments of type {1}, but got {2}".format(
-                        str(self.receiver.static_type().name) + "." + str(self.method_name) + "()",
+                raise JavaTypeError(
+                    "{0} constructor expects arguments of type {1}, but got {2}".format(
+                        self.instantiated_type.name,
                         names(list_of_expected_constructor_arguments),
                         names(list_of_actual_argument_types)))
 

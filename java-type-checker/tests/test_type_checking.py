@@ -77,7 +77,7 @@ class TestTypeChecking(TypeTest):
                 "setPosition",
                 Literal("0.0", Type.double)))
 
-    def test_flags_wrong_argument_type(self): #Fail
+    def test_flags_wrong_argument_type(self): #Pass
         """
         Equivalent Java:
 
